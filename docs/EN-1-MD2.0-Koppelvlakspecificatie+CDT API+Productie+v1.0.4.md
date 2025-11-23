@@ -1038,9 +1038,11 @@ data: {
 
 ### 3.16.1 Foutmeldingen wegens headers (Error messages due to headers)
 
+The following messages can be returned on all calls:
+
 | Status code | Notification code | Notification text | Explanation |
 | --- | --- | --- | --- |
-| 400 | **H000** | Missing header <headernaam>. | Dienstverlener, BerichtId, Softwareversie-Registratiemiddel, Softwareversie-Centrale-Applicatie or Verzendtijdstip is missing. |
+| 400 | **H000** | Missing header \<headernaam\>. | Dienstverlener, BerichtId, Softwareversie-Registratiemiddel, Softwareversie-Centrale-Applicatie or Verzendtijdstip is missing. |
 | 400 | **H001** | Value of 'Bericht-Id' does not comply with the format. | Must be UUID |
 | 400 | **H002** | Value of 'Verzendtijdstip' does not comply with the format. | IETF RFC3339 "date-time" specification. |
 | 400 | **H003** | Value of 'Verzendtijdstip' is in the future. | A message cannot have been sent in the future. |
@@ -1050,47 +1052,129 @@ data: {
 | 400 | **HF00** | Unknown Dienstverlener. | Dienstverlener code is not active or unknown. |
 | 400 | **HF10** | Bericht-Id is not unique. | The BerichtId in the header must be unique |
 
+Note: Due to the way the validations are performed, header errors will only occur on messages that do not produce other errors.
+
+
+### Code Mapping of API Calls for Error Messages
+
+
+| Code | API Call NL (Aanroep)        | API Call                     |
+| ---- | ---------------------------- | ---------------------------- |
+| A    | Aanmelden dienst             | Register service             |
+| B    | Afmelden dienst              | Deregister service           |
+| C    | Aanmelden rit                | Register ride                |
+| D    | Afmelden rit                 | Deregister ride              |
+| E    | Aanmelden pauze              | Register break               |
+| F    | Afmelden pauze               | Deregister break             |
+| G    | Aanmelden ICT-dienstverlener | Register IT service provider |
+| H    | Valideren chauffeur          | Validate driver              |
+| I    | Melden gebeurtenissen        | Report events                |
+| J    | Opvragen chauffeursnummer    | Request driver number        |
+
+Note: 'Request open services' and 'deregister IT service provider' are not included because they contain no message body.
 
 
 ### 3.16.2 Foutmeldingen wegens fouten in het bericht zelf (Error messages due to errors in the message itself)
 
-| Status code | Code | Text | Explanation |
-| --- | --- | --- | --- |
-| 400 | **G000** | Invalid JSON. | Applies to the entire message: invalid JSON formatting. |
-| 400 | **G010** | 'aanmeldtijdstip' is missing. | Mandatory field |
-| 400 | **G022** | Value of 'registratietijdstip' is in the future. | The date/time may not be in the future. |
-| 400 | **G030** | 'afmeldtijdstip' is missing. | Mandatory field |
-| 400 | **G041** | Value of 'id' does not comply with the format. | UUID |
-| 400 | **G062** | Value of 'chauffeur.chauffeursnummer' does not comply with the format. | Format `^T\\d{7}$`, e.g., T0012345. |
-| 400 | **G074** | Value of 'chauffeur.rijbewijs.land' does not comply with the format. | country code conforming to ISO3166-1 alpha-2 |
-| 400 | **G092** | Value of 'ondernemer.kiwaNummer' does not comply with the format. | First position is always a 'P', the other 6 positions are digits. |
-| 400 | **G103** | Value of 'voertuig.kenteken' does not comply with the format. | Regex `^[0-9A-Z]{6}$` |
-| 400 | **G132** | Value of 'locatie.breedtegraad' does not comply with the format. | Numeric(8,6) |
-| 400 | **G134** | Value of 'locatie.lengtegraad' does not comply with the format. | Numeric(9,6) |
-| 400 | **G140** | 'afstand' is missing. | Mandatory for ride deregistration |
-| 400 | **G150** | 'ritprijs' is missing. | Mandatory for ride |
 
+| Status | Code | Text                                                                                                                            | Explanation                       | API Call Codes      |
+| ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------- |
+| 400    | G000 | Invalid JSON.                                                                                                                   | Invalid JSON formatting.          | A,B,C,D,E,F,G,H,I,J |
+| 400    | G001 | Double field.                                                                                                                   | Data must be unique.              | A,B,C,D,E,F,G,H,I,J |
+| 400    | G010 | 'aanmeldtijdstip' (registration time) is missing.                                                                               | Required field.                   | A,C,E               |
+| 400    | G011 | Value of 'aanmeldtijdstip' (registration time) does not conform to the format.                                                  | ISO UTC yyyy-MM-ddThh:mm:ss.sssZ. | A,C,E               |
+| 400    | G012 | Value of 'aanmeldtijdstip' (registration time) is in the future.                                                                |                                   | A,C,E               |
+| 400    | G020 | 'registratietijdstip' (registration time) is missing.                                                                           |                                   | A,B,C,D,E,F,I       |
+| 400    | G021 | Value of 'registratietijdstip' (registration time) does not conform to the format.                                              |                                   | A,B,C,D,E,F,I       |
+| 400    | G022 | Value of 'registratietijdstip' (registration time) is in the future.                                                            |                                   | A,B,C,D,E,F,I       |
+| 400    | G030 | 'afmeldtijdstip' (check-out time) is missing.                                                                                   |                                   | B,D,F               |
+| 400    | G031 | Value of 'afmeldtijdstip' (check-out time) does not conform to the format.                                                      |                                   | B,D,F               |
+| 400    | G032 | Value of 'afmeldtijdstip' (check-out time) is in the future.                                                                    |                                   | B,D,F               |
+| 400    | G040 | 'id' (ID) is missing.                                                                                                           | Required.                         | A,C,E,I             |
+| 400    | G041 | Value of 'id' (ID) does not conform to the format.                                                                              | UUID.                             | A,C,E,I             |
+| 400    | G050 | Value of path parameter 'dienst' (employ) does not conform to the format.                                                       | UUID.                             | B,C,D,E,F,I         |
+| 400    | G060 | 'chauffeur' (driver) is missing.                                                                                                |                                   | A,H                 |
+| 400    | G061 | 'chauffeur.chauffeursnummer' (driver.driver number) is missing.                                                                 |                                   | A,H                 |
+| 400    | G062 | Value of 'chauffeur.chauffeursnummer' (driver.driver number) does not conform to the format.                                    |                                   | A,H                 |
+| 400    | G063 | 'chauffeur.gevalideerd' (driver validated) is missing.                                                                          |                                   | A                   |
+| 400    | G064 | Value of 'chauffeur.gevalideerd' (driver validated) does not conform to the format.                                             | Boolean.                          | A                   |
+| 400    | G070 | 'chauffeur.rijbewijs' (driver's license) is missing.                                                                            |                                   | A,H,J               |
+| 400    | G071 | 'chauffeur.rijbewijs.rijbewijsnummer' (driver's license.driver's license number) is missing.                                    |                                   | A,H,J               |
+| 400    | G072 | Value of 'chauffeur.rijbewijs.rijbewijsnummer' (driver's license.driver's license number) does not conform to the format.       |                                   | A,H,J               |
+| 400    | G073 | 'chauffeur.rijbewijs.land' (driver.license.country) is missing.                                                                 |                                   | A,H,J               |
+| 400    | G074 | Value of 'chauffeur.rijbewijs.land' (driver.license.country) does not conform to the format.                                    |                                   | A,H,J               |
+| 400    | G080 | 'authenticatie' (authentication) is missing.                                                                                    |                                   | A,I                 |
+| 400    | G081 | 'authenticatie.middel' (authentication.means) is missing.                                                                       |                                   | A,I                 |
+| 400    | G082 | Value of 'authenticatie.middel' (authentication.means) does not conform to the format.                                          |                                   | A,I                 |
+| 400    | G083 | 'authenticatie.kenmerk' (authentication feature) is missing.                                                                    |                                   | A,I                 |
+| 400    | G084 | Value of 'authenticatie.kenmerk' (authentication feature) does not conform to the format.                                       |                                   | A,I                 |
+| 400    | G090 | 'ondernemer' (entrepreneur) is missing.                                                                                         |                                   | A,G,H               |
+| 400    | G091 | 'ondernemer.kiwaNummer' (entrepreneur.kiwaNumber) is missing.                                                                   |                                   | A,G,H               |
+| 400    | G092 | Value of 'ondernemer.kiwaNummer' (entrepreneur.kiwaNumber) does not conform to the format.                                      |                                   | A,G,H               |
+| 400    | G093 | 'ondernemer.kvkNummer' (entrepreneur.Chamber of Commerce number) is missing.                                                    |                                   | A,G,H               |
+| 400    | G094 | Value of 'ondernemer.kvkNummer' (entrepreneur.Chamber of Commerce number) does not conform to the format.                       |                                   | A,G,H               |
+| 400    | G100 | 'voertuig' (vehicle) is missing.                                                                                                |                                   | A                   |
+| 400    | G101 | 'voertuig.kenteken' (vehicle registration number) is missing.                                                                   |                                   | A                   |
+| 400    | G103 | Value of 'voertuig.kenteken' (vehicle registration number) does not conform to the format.                                      |                                   | A                   |
+| 400    | G104 | 'voertuig.validatiemethode' (vehicle validation method) is missing.                                                             |                                   | A                   |
+| 400    | G105 | Value of 'voertuig.validatiemethode' (vehicle validation method) does not conform to the format.                                |                                   | A                   |
+| 400    | G106 | 'voertuig.validatiedatum' (vehicle validation date) is missing.                                                                 |                                   | A                   |
+| 400    | G107 | Value of 'voertuig.validatiedatum' (vehicle validation date) does not conform to the format.                                    |                                   | A                   |
+| 400    | G108 | Value of 'voertuig.validatiedatum' (vehicle validation date) is in the future.                                                  |                                   | A                   |
+| 400    | G110 | 'andereWerkzaamheden.begintijdstip' (otherWorks.start time) is missing.                                                         |                                   | A                   |
+| 400    | G111 | Value of 'andereWerkzaamheden.begintijdstip' (otherWorks.start time) does not conform to the format.                            |                                   | A                   |
+| 400    | G120 | 'andereWerkzaamheden.eindetijdstip' (otherWorks.endtime) is missing.                                                            |                                   | A                   |
+| 400    | G121 | Value of 'andereWerkzaamheden.eindetijdstip' (otherWorks.endtime) does not conform to the format.                               |                                   | A                   |
+| 400    | G122 | 'andereWerkzaamheden.eindetijdstip' (otherWorks.endtime) is before 'andereWerkzaamheden.starttijdstip'  (otherWorks.start time) |                                   | A                   |
+| 400    | G123 | Value of 'andereWerkzaamheden.eindetijdstip' (otherWorks.endtime) is after 'dienst.aanmeldtijdstip' (service.registration time) |                                   | A                   |
+| 400    | G130 | 'locatie' (location) is missing.                                                                                                |                                   | C,I                 |
+| 400    | G131 | 'locatie.breedtegraad' (location.latitude) is missing.                                                                          |                                   | C,I                 |
+| 400    | G132 | Value of 'locatie.breedtegraad' (location.latitude) does not conform to the format.                                             |                                   | C,I                 |
+| 400    | G133 | 'locatie.lengtegraad' (location.longitude) is missing.                                                                          |                                   | C,I                 |
+| 400    | G134 | Value of 'locatie.lengtegraad' (location.longitude) does not conform to the format.                                             |                                   | C,I                 |
+| 400    | G140 | 'afstand' (distance) is missing.                                                                                                |                                   | D                   |
+| 400    | G141 | Value of 'afstand' (distance) does not conform to the format.                                                                   |                                   | D                   |
+| 400    | G150 | 'ritprijs' (fare) is missing.                                                                                                   |                                   | D                   |
+| 400    | G151 | Value of 'ritprijs' (fare) does not conform to the format.                                                                      |                                   | D                   |
+| 400    | G160 | Value of path parameter 'rit' (ride) does not conform to the format.                                                            |                                   | D                   |
+| 400    | G170 | Value of path parameter 'pauze' (break) does not conform to the format.                                                         |                                   | F                   |
+| 400    | G180 | 'gebeurtenistijdstip' (event time) is missing.                                                                                  |                                   | I                   |
+| 400    | G181 | Value of 'gebeurtenistijdstip' (event time) does not conform to the format.                                                     |                                   | I                   |
+| 400    | G182 | Value of 'gebeurtenistijdstip' (event time) is in the future.                                                                   |                                   | I                   |
+| 400    | G190 | 'gebeurteniscode' (event code) is missing.                                                                                      |                                   | I                   |
+| 400    | G191 | Value of 'gebeurteniscode' (event code) does not conform to the format.                                                         |                                   | I                   |
 
-
-_(The full table is very long. The above is a selection of the most relevant Gxxx codes. The table in the source document contains error codes G001 to G191.)_
 
 ### 3.16.3 Foutmeldingen wegens verwerken inhoud (Error messages due to processing content)
 
-| Status code | Code | Text | Explanation |
-| --- | --- | --- | --- |
-| 400 | **DF01** | Value of 'aanmeldtijdstip' is within another service. | A service can only be registered if the start time of the service does not overlap with a deregistered service for the same driver. |
-| 400 | **DF02** | Value of 'id' is not unique. | Identification must be unique |
-| 400 | **DF05** | There are non-deregistered activities on this service. | A service can be deregistered if all activities on that service have been deregistered. |
-| 400 | **DF09** | Value of 'afmeldtijdstip' is before 'aanmeldtijdstip' of the service | A service cannot be deregistered before a time that is before the registration time |
-| 400 | **VF01** | Activity within service cannot start earlier than service |     |
-| 400 | **VF04** | Value of 'afmeldtijdstip' is before 'aanmeldtijdstip' of activity. | An activity within a service cannot end before the start of the activity |
-| 400 | **VF06** | Value of 'aanmeldtijdstip' of break is within ride or break. | A break may not overlap with another activity. |
-| 400 | **VF07** | Value of 'aanmeldtijdstip' of ride is within reported break. | A ride cannot be started if: a break has been registered earlier and not deregistered; the registration time falls within a registered and deregistered break. |
-| 404 | **OF02** | No driver number found for the specified driving license | No driver number was found for the specified driving license. |
 
+| status | Code     | Text                                                                                                              | Explanation                                                                                                                                                       | API Call Codes |
+| ------ | -------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| 400    | DF01     | Value of 'aanmeldtijdstip' (registration time) is within another service.                                         | A service can only be booked if the start time of the service does not overlap with a cancelled service for the same driver.                                      | A              |
+| 400    | DF02     | Value of 'id' (id) is not unique.                                                                                 | Identification must be unique                                                                                                                                     | A,C,E,I        |
+| 400    | DF03     | Service cannot be found based on the specified ID.                                                                | A report within a service can only be made if the service can be found.                                                                                           | B,C,D,E,F,I    |
+| 400    | DF04     | Service has already been logged out.                                                                              | A service can only be unsubscribed if the service has not already been unsubscribed.                                                                              | B              |
+| 400    | DF05 (1) | There are unreported transactions on this service.                                                                | A service can be logged out when all transactions on that service have been logged out.                                                                           | B              |
+| 400    | DF09     | Value of 'afmeldtijdstip' (log-out time) is before 'aanmeldtijdstip' (registration time) of the service           | A service cannot be unsubscribed for a time before the login time                                                                                                 | B              |
+| 400    | DF10     | Value of 'afmeldtijdstip' (log-out time) is before 'afmeldtijdstip' (log-out time) of transactions in the service | A logout time for a service cannot precede any logout or logout times for transactions within the service.                                                        | B              |
+| 400    | DF11     | Value of 'afmeldtijdstip' (log-out time) falls within another service                                             | This can only occur with services provided subsequently.                                                                                                          | B              |
+| 400    | VF01     | Value of 'aanmeldtijdstip' (registration time) is for 'dienst.aanmeldtijdstip' (service.login time) .             | On-duty work cannot commence before the on-duty start date                                                                                                        | C,E            |
+| 400    | VF02     | Transaction cannot be found based on the specified ID.                                                            | A transaction (trip/break) can only be cancelled if it has been registered.                                                                                       | D,F            |
+| 400    | VF03     | Transaction has already been cancelled.                                                                           | A cancelled transaction (trip/break) cannot be cancelled.                                                                                                         | D,F            |
+| 400    | VF04     | Value of 'afmeldtijdstip' (log-out time) is for 'aanmeldtijdstip' (registration time) of transaction.             | A transaction within a service cannot end before the transaction begins                                                                                           | D,F            |
+| 400    | VF05     | The maximum number of transactions has been reached for this service.                                             | The number of transactions per service is limited to 100.                                                                                                         | C,E            |
+| 400    | VF06     | Value of 'aanmeldtijdstip' (registration time) of break is within trip or break.                                  | A break may not overlap with another action.                                                                                                                      | E              |
+| 400    | VF07     | Value of 'aanmeldtijdstip' (registration time) of trip is within reported break.                                  | A ride cannot be started if: • a break has previously been registered and not cancelled; • the registration time falls within a registered and cancelled break. | C              |
+| 400    | VF08     | Value of 'afmeldtijdstip' (log-out time) of break is within trip or break.                                        | A break may not overlap with another action. Note: This error can only occur if a break is reported afterward.                                                    | F              |
+| 400    | VF09     | Value of 'afmeldtijdstip' (log-out time) of ride not allowed, break during ride.                                  | A ride cannot be cancelled if this would cause a break during the ride.                                                                                           | D              |
+| 400    | VF10     | Transaction not found within the specified service                                                                | A trip or break is cancelled whose ID is not known to the service                                                                                                 | D,F            |
+| 400    | VF11     | Value of 'aanmeldtijdstip' (registration time) of break is for registered transaction                             | It is not permitted to report a break with a check-in time before the check-in time of another operation.                                                         | E              |
+| 400    | BF01     | The maximum number of events has been reached for this service.                                                   | The number of events per service is capped at 100.                                                                                                                | C,E            |
+| 400    | OF01     | Maximum number of requests reached                                                                                | There is a maximum number of 500 requests per day per ICT service provider.                                                                                       | J              |
+| 404    | OF02     | No driver number found for the specified driver's license                                                         | No driver number was found for submitting the driver's license.                                                                                                   | J              |
 
+(1): With this code the relevant transaction(s) are also returned in the response.
 
-_(The full table is very long. The above is a selection of the most relevant DFxx, VFxx, BFxx, and OFxx codes. The table in the source document contains error codes DF01 to DF11, VF01 to VF11, BF01, and OF01 to OF02.)_
 
 - - -
 

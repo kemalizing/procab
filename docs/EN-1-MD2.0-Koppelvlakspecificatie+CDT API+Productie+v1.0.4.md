@@ -9,7 +9,7 @@ Version 1.0.4
 | Date | June 6, 2025 |
 | Status | Definitive |
 
-Export to Sheets
+
 
 # COLOPHON
 
@@ -29,7 +29,7 @@ Interface Specification CDT submission of supervision data - Production
 | 1.0.3 | 15-04-2025 | Validation DF09 added for negative service duration. Validation DF10 added for end of service before end of activities. Authentication by the entrepreneur upon submission is added for service registration. |
 | 1.04 | 06-06-2025 | Definitions adopted from legal CDT regulation; A few textual adjustments; 7.1.2 and 7.1.3 expanded |
 
-Export to Sheets
+
 
 Inspections Environment and Transport 1.0.4 06-06-2025
 
@@ -45,7 +45,7 @@ Interface Specification CDT submission of supervision data - Production
 | REF-2 | DA42EN-Electronic-Driving-Licence-Reading-Manual-v2-3.pdf | Manual of the Netherlands Vehicle Authority (RDW) for the electronic reading of the Dutch driving license. |
 | REF-3 | DA12 - Kentekencard Uitleesdocumentatie v2 1 1.pdf | Manual of the Netherlands Vehicle Authority (RDW) for the electronic reading of the Dutch vehicle registration certificate. |
 
-Export to Sheets
+
 
 Inspections Environment and Transport 1.0.4 06-06-2025
 
@@ -78,7 +78,7 @@ These concepts are included to make this document independently readable. Leadin
 | Verrichting (Activity) | Activities are actions within a service of the type ride or break. |
 | Voertuig (Vehicle) | A car used for performing taxi transport. |
 
-Export to Sheets
+
 
 Inspections Environment and Transport 1.0.4 06-06-2025
 
@@ -161,7 +161,7 @@ Interface Specification CDT submission of supervision data - Production
 |     |     | 7.2.2 API-keys |
 |     | 7.3 Headers. | 33  |
 
-Export to Sheets
+
 
 Inspections Environment and Transport 1.0.4 06-06-2025
 
@@ -379,7 +379,7 @@ The fields in the table below are in the message header.
 | **Softwareversie-Registratiemiddel** (Software Version Registration Tool) | String(20) | `v12.23.124` | Software version of the registration tool. |
 | **Softwareversie-Centrale-Applicatie** (Software Version Central Application) | String (20) | `v2.2.9` | Software version of the Central application |
 
-Export to Sheets
+
 
 _1: Softwareversie-Registratiemiddel may be an empty string if the message does not originate from a "driver registration tool"._
 
@@ -398,7 +398,7 @@ The fields in the table below may appear in a message (in the message body); it 
 | **gebeurtenistijdstip** (event time) | `date-time` in UTC conforming to IETF RFC3339 | `2023-03-31T14:55:44Z` or `2023-03-31T14:55:44.444Z` | Time at which the event occurs on the registration tool. |
 | **gebeurteniscode** (event code) | String(4) | `M106` | code from table in paragraph 3.14 |
 
-Export to Sheets
+
 
 **Rules:**
 
@@ -423,7 +423,7 @@ In addition to the fields in the table above, objects can also be sent. These ar
 | **gevalideerd** (validated) | boolean |     | `true` | indication whether the driving license has been validated at the CDT Notifications API. This may only be set to `true` if validation code **0** was returned for the driver/entrepreneur combination upon calling `POST https://[host]/v2/chauffeurs/valideren`. |
 | **rijbewijs** (driving license) | object |     |     | see paragraph 3.3.2 |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -447,7 +447,7 @@ JSON
 | **land** (country) | string(2) | `^[A-Z]{2}$` | `NL` | Country code according to **ISO3166-1 alpha-2** |
 | **rijbewijsnummer** (driving license number) | string(16) | `^[0-9a-zA-Z]{1,16}$` | `1234567890` | A Dutch driving license number consists of 10 digits, other countries may differ. Hyphens, spaces, and dots are omitted. |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -467,7 +467,7 @@ JSON
 | **middel** (means) | string{4} | `RBNL\|BIO\|2FA\|geen` | RBNL | RBNL = Dutch driving license<br><br>  <br><br>BIO = Biometrics<br><br>  <br><br>2FA = 2-factor authentication<br><br>  <br><br>geen = driver is not authenticated (NB: only to be used for service registration by carrier for retrospective submission). |
 | **kenmerk** (characteristic) | string(32) |     | `1234565677` `vingerafdruk` `gezichtsherkenning` `wachtwoord-SMS` `pincode-koppelcode` `geen` | For RBNL → driving license number.<br><br>  <br><br>For BIO → fingerprint, facial recognition.<br><br>  <br><br>For 2FA → password-SMS, password-link code, PIN code-SMS, PIN code-link code.<br><br>  <br><br>For geen → none. |
 
-Export to Sheets
+
 
 **Examples:**
 
@@ -499,7 +499,7 @@ JSON
 | **kiwaNummer** (kiwa Number) | string(7) | `^P\\d{4,6}$` | `P123456` | KIWA taxi permit number |
 | **kvkNummer** (kvk Number) | string(8) | `^\\d{8}$` | `12345678` | Chamber of Commerce number |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -520,7 +520,7 @@ JSON
 | **validatiemethode** (validation method) | string (1) | `K\|N` | `K` | "K": license plate card read<br><br>  <br><br>"N": not validated |
 | **validatiedatum** (validation date) | string(10) | `^\d{4}-\d{2}-\d{2}$` | `2024-03-04` | date on which validation was performed, format **YYYY-MM-DD**. If `validatiemethode = "N"`, use the current date. |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -541,7 +541,7 @@ JSON
 | **begintijdstip** (start time) | `date-time` in UTC conforming to IETF RFC3339 | `2023-03-31T14:55:44.444Z` | date and time at which other activities started |
 | **eindetijdstip** (end time) | `date-time` in UTC conforming to IETF RFC3339 | `2023-03-31T14:55:44.444Z` | date and time at which other activities ended |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -567,7 +567,7 @@ JSON
 | **breedtegraad** (latitude) | string | `^\[-+\]?(90(.0{4,6})? \| (\[1-\]?\\d(.\\d{4,6})?))$` | `5.100056` | geographical latitude with 4 to 6 digits after the decimal point |
 | **lengtegraad** (longitude) | string | `^\[-+\]?(180(.0{4,6})? \| ((1\[0-7\] \| \[1-9\])?\\d(.\\d{4,6})?))$` | `52.086491` | geographical longitude with 4 to 6 digits after the decimal point |
 
-Export to Sheets
+
 
 **Example:**
 
@@ -597,7 +597,7 @@ JSON
 | **registratietijdstip** (recording time) | yes |
 | **andere Werkzaamheden** (other activities) | no  |
 
-Export to Sheets
+
 
 **Response sunny day: '201 CREATED'**
 
@@ -617,7 +617,7 @@ Notifications in the table below are possible with a '201 CREATED' result code.
 | 201 | **DF07** | 'chauffeur' is not validated while it is marked as validated. | A driver may only be reported as validated if a successful validation has been performed. |
 | 201 | **DF08** | 'ICT-dienstverlener' is not registered for entrepreneur | An entrepreneur must register which ICT service provider is supplying for them. |
 
-Export to Sheets
+
 
 **Response for outstanding services: '201 CREATED'**
 
@@ -666,7 +666,7 @@ data: {
 | **afmeldtijdstip** (deregistration time) | yes |
 | **registratietijdstip** (recording time) | yes |
 
-Export to Sheets
+
 
 **Response sunny day: '200 OK'**
 
@@ -715,7 +715,7 @@ data: {
 | **registratietijdstip** (recording time) | yes |
 | **locatie** (location) | yes |
 
-Export to Sheets
+
 
 **Response sunny day: '201 CREATED'**
 
@@ -739,7 +739,7 @@ Fields in the response body:
 | **afstand** (distance) | yes |
 | **ritprijs** (ride price) | yes |
 
-Export to Sheets
+
 
 **NB.** For contract transport and group transport, the price is not mandatory. In that case, `ritprijs` may be **0 (zero)**.
 
@@ -764,7 +764,7 @@ Fields in the response body:
 | **aanmeldtijdstip** (registration time) | yes |
 | **registratietijdstip** (recording time) | yes |
 
-Export to Sheets
+
 
 **Response sunny day: '201 CREATED'**
 
@@ -786,7 +786,7 @@ Fields in the response body:
 | **afmeldtijdstip** (deregistration time) | yes |
 | **registratietijdstip** (recording time) | yes |
 
-Export to Sheets
+
 
 **Response sunny day: '200 OK'**
 
@@ -807,7 +807,7 @@ Fields in the response body:
 | --- | --- |
 | **ondernemer** (entrepreneur) | yes |
 
-Export to Sheets
+
 
 **Response sunny day: '200 OK'**
 
@@ -834,7 +834,7 @@ data: {
 | **3** | 'ondernemer.kvkNummer' is unknown |
 | **4** | 'ondernemer.kvkNummer' is from a non-active business |
 
-Export to Sheets
+
 
 ## 3.11 Afmelden ICT-dienstverlener (Deregister ICT service provider)
 
@@ -862,7 +862,7 @@ There is no message body present. If the entrepreneur is unknown to the ICT serv
 | **chauffeur** (driver) | yes |
 | **ondernemer** (entrepreneur) | yes |
 
-Export to Sheets
+
 
 **NB:** the driver object has the component "**gevalideerd**" (validated). The value of this must be `false` for this query.
 
@@ -892,7 +892,7 @@ data: {
 | **4** | 'chauffeur.chauffeursnummer' is from an unauthorized driver | 'chauffeur.chauffeursnummer' is from an unauthorized driver |
 | **5** | driving license is invalid | not applicable |
 
-Export to Sheets
+
 
 ## 3.13 Opvragen van openstaande diensten en verrichtingen (Requesting outstanding services and activities)
 
@@ -942,7 +942,7 @@ If there are no outstanding services, the call receives a **'204 No Content'** r
 | **authenticatie** (authentication) | No \*1 |
 | **locatie** (location) | No \*1 |
 
-Export to Sheets
+
 
 _1: see table below when this field is mandatory._
 
@@ -965,7 +965,7 @@ The codes for Notifications are mandatory.
 | **M112** | Accidentally started service/activity closed. |     |
 | **M113** | Ride price has been manually entered. |     |
 
-Export to Sheets
+
 
 **Response sunny day: '201 OK'**
 
@@ -986,7 +986,7 @@ Fields in the response body:
 | --- | --- |
 | **rijbewijs** (driving license) | Yes |
 
-Export to Sheets
+
 
 **Response if found: '200 OK'**
 
@@ -1034,7 +1034,7 @@ data: {
 | **BFxx** | functional error in event message. |
 | **OFxx** | functional error in query |
 
-Export to Sheets
+
 
 ### 3.16.1 Foutmeldingen wegens headers (Error messages due to headers)
 
@@ -1050,7 +1050,7 @@ Export to Sheets
 | 400 | **HF00** | Unknown Dienstverlener. | Dienstverlener code is not active or unknown. |
 | 400 | **HF10** | Bericht-Id is not unique. | The BerichtId in the header must be unique |
 
-Export to Sheets
+
 
 ### 3.16.2 Foutmeldingen wegens fouten in het bericht zelf (Error messages due to errors in the message itself)
 
@@ -1070,7 +1070,7 @@ Export to Sheets
 | 400 | **G140** | 'afstand' is missing. | Mandatory for ride deregistration |
 | 400 | **G150** | 'ritprijs' is missing. | Mandatory for ride |
 
-Export to Sheets
+
 
 _(The full table is very long. The above is a selection of the most relevant Gxxx codes. The table in the source document contains error codes G001 to G191.)_
 
@@ -1088,7 +1088,7 @@ _(The full table is very long. The above is a selection of the most relevant Gxx
 | 400 | **VF07** | Value of 'aanmeldtijdstip' of ride is within reported break. | A ride cannot be started if: a break has been registered earlier and not deregistered; the registration time falls within a registered and deregistered break. |
 | 404 | **OF02** | No driver number found for the specified driving license | No driver number was found for the specified driving license. |
 
-Export to Sheets
+
 
 _(The full table is very long. The above is a selection of the most relevant DFxx, VFxx, BFxx, and OFxx codes. The table in the source document contains error codes DF01 to DF11, VF01 to VF11, BF01, and OF01 to OF02.)_
 
@@ -1170,7 +1170,7 @@ If the `/verbinding` endpoint returns a **`500-error`**, a new call to `/verbind
 | **400** | For a 400 due to errors in the header or the message: first correct the error and then send a new message with the corrected data. |
 | **50x** | The CDT Notifications API is not reachable. Try again after 1 minute (same message body, different time stamp, same messageId). |
 
-Export to Sheets
+
 
 ## 6.3 Error in calling /verbinding
 
@@ -1179,7 +1179,7 @@ Export to Sheets
 | **40x** | An error was made in the call. Try again with a new message. |
 | **50x** | The CDT Notifications API is not reachable. Try again after 1 minute with a new call to /verbinding. |
 
-Export to Sheets
+
 
 ## 6.4 Duplicate detection
 
@@ -1238,4 +1238,4 @@ The CDT Notifications API expects the following headers:
 | **Softwareversie-Registratiemiddel** | Max 20 positions | `Softwareversie-Registratiemiddel: v1.0.3` |
 | **Softwareversie-Centrale-Applicatie** | Max. 20 positions | `Softwareversie-Centrale-Applicatie: v12.6.5` |
 
-Export to Sheets
+
